@@ -39,11 +39,17 @@ def load_dev_dataset(path):
 
 
 def load_train_dataset(path):
-    if not os.path.exists(path + config.REPARIED_TRAIN_FILE):
-        raise ValueError('DataSet path does not exist ')
-        return
+    if config.need_repair:
+        if not os.path.exists(path + config.REPARIED_TRAIN_FILE):
+            raise ValueError('DataSet path does not exist')
+            return
+        data = pd.read_json(path + config.REPARIED_TRAIN_FILE)
+    else:
+        if not os.path.exists(path + config.TRAIN_FILE):
+            raise ValueError('DataSet path does not exist ')
+            return
 
-    data = pd.read_json(path + config.REPARIED_TRAIN_FILE)
+        data = pd.read_json(path + config.TRAIN_FILE)
     # reform labels
     data['label'] = data['label'].map(
         lambda label: 0 if label == 'negative' else (1 if label == 'neutral' else 2))
